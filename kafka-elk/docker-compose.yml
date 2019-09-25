@@ -6,6 +6,7 @@ services:
       context: elasticsearch/
       args:
         ELK_VERSION: $ELK_VERSION
+    container_name: elasticsearch
     volumes:
       - type: bind
         source: ./elasticsearch/config/elasticsearch.yml
@@ -21,13 +22,17 @@ services:
       ES_JAVA_OPTS: "-Xmx256m -Xms256m"
       ELASTIC_PASSWORD: changeme
     networks:
-      - elk
+      elastic-kibana:
+        ipv4_address: 192.168.1.10
+      logstash-elastic:
+        ipv4_address: 192.168.2.10
 
   logstash:
     build:
       context: logstash/
       args:
         ELK_VERSION: $ELK_VERSION
+    container_name: logstash
     volumes:
       - type: bind
         source: ./logstash/config/logstash.yml
@@ -43,7 +48,10 @@ services:
     environment:
       LS_JAVA_OPTS: "-Xmx256m -Xms256m"
     networks:
-      - elk
+      logstash-elastic:
+        ipv4_address: 192.168.2.20
+      kafka-logstash:
+        ipv4_address: 192.168.3.20
     depends_on:
       - elasticsearch
 
@@ -52,6 +60,7 @@ services:
       context: kibana/
       args:
         ELK_VERSION: $ELK_VERSION
+    container_name: kibana
     volumes:
       - type: bind
         source: ./kibana/config/kibana.yml
@@ -60,13 +69,60 @@ services:
     ports:
       - "5601:5601"
     networks:
-      - elk
+      elastic-kibana:
+        ipv4_address: 192.168.1.20 
     depends_on:
       - elasticsearch
 
+  zookeeper:
+    image: zookeeper
+    container_name: zookeeper
+    tty: true
+    ports:
+     - "2181:2181"
+    networks:
+      kafka-zookeeper:
+        ipv4_address: 192.168.4.20
+
+  kafka:
+    image: wurstmeister/kafka
+    container_name: kafka
+    tty: true
+    ports:
+     - "9092:9092"
+    networks:
+      kafka-logstash:
+        ipv4_address: 192.168.3.10
+      kafka-zookeeper:
+        ipv4_address: 192.168.4.10
+    environment:
+      KAFKA_ADVERTISED_HOST_NAME: <KAFKA_IP>
+      KAFKA_ADVERTISED_PORT: 9092
+      KAFKA_CREATE_TOPICS: "topictest:1:1"
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      #KAFKA_HEAP_OPTS: "-Xmx4G -Xms4G"
+
 networks:
-  elk:
+  elastic-kibana:
     driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.1.0/24
+  logstash-elastic:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.2.0/24
+  kafka-logstash:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.3.0/24
+  kafka-zookeeper:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 192.168.4.0/24
 
 volumes:
   elasticsearch:
