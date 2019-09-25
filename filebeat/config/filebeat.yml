@@ -1,0 +1,13 @@
+filebeat.inputs:
+- input_type: log
+  paths:
+    - /tmp/asti-metrics-json-chains.txt
+
+output.kafka:
+  codec.format:
+    string: '%{[message]}'
+
+  hosts: ["<KAFKA_IP>:9092"]
+  topic: 'topictest'
+  key: 'read_metric_data_response'
+
