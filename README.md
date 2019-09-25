@@ -19,6 +19,8 @@ Note that:
 
 ## Test stages
 
+Although it is going to be presented the different test stages, with the commands used in each stage, note that in the [/resources/videos folder](https://github.com/5GEVE/5geve-wp4-monitoring-dockerized-env/tree/master/resources/videos) it is available the complete demo recorded in different videos.
+
 ### 1. Cleaning up the scenario
 
 ```shell
