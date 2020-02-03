@@ -85,7 +85,8 @@ services:
         ipv4_address: 192.168.4.20
 
   kafka:
-    image: wurstmeister/kafka
+    build:
+      context: kafka/
     container_name: kafka
     tty: true
     ports:
