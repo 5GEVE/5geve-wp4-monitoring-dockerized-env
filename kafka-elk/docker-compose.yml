@@ -97,9 +97,9 @@ services:
       kafka-zookeeper:
         ipv4_address: 192.168.4.10
     environment:
-      KAFKA_ADVERTISED_HOST_NAME: <KAFKA_IP>
+      KAFKA_ADVERTISED_HOST_NAME: $KAFKA_IP
       KAFKA_ADVERTISED_PORT: 9092
-      KAFKA_CREATE_TOPICS: "topictest:1:1"
+      #KAFKA_CREATE_TOPICS: "topictest:1:1"
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
       #KAFKA_HEAP_OPTS: "-Xmx4G -Xms4G"
 
