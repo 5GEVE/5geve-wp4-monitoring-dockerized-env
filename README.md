@@ -82,3 +82,7 @@ Then, you can check that data has been received correctly in Elasticsearch.
 Finally, you can play with the data by generating different graphs. For example, in the following picture, it has been displayed the time-metrics_data graph (average + lower and upper standard deviation).
 
 ![Demo architecture](https://github.com/5GEVE/5geve-wp4-monitoring-dockerized-env/blob/master/resources/images/kibana_3.png)
+
+## Copyright
+
+This work has been done by Telcaria Ideas S.L. for the 5G EVE European project under the [Apache 2.0 License](LICENSE).
